@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>RWBY Downloader</title>
+    </head>
+    <body>
+        <h1>RWBY Downloader</h1>
+
+        <form action="/download" method="post">
+            URL: <input type="text" name="url" style="width: 550px"> <br>
+
+            File Pattern:
+            <select name="pattern">
+                <option>E:\RWBY\1 - Originals\1 - Rooster\{0}\RWBY {0}.mp4</option>
+                <option>E:\RWBY\1 - Originals\3 - Extras\CRWBY - Behind the Episode\{0}\CRWBY {0}.mp4</option>
+                <option>E:\RWBY\1 - Originals\{0}.mp4</option>
+            </select>
+            <br>
+
+            Name: <input type="text" name="name" style="width: 550px"> <br>
+
+            <input type="submit" value="download">
+        </form>
+    </body>
+</html>
