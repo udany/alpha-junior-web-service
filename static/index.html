@@ -10,37 +10,10 @@
             async function loadUsers() {
                 let result = await fetch('/user/');
                 let data = await result.json();
-                
+
                 return data;
             }
-            
-            //função para criar novo user
-            async function addUser(user){
-                let result =  await fetch(`/user/save?name=${user.name}&gender=${user.gender}&hairColor=${user.hairColor}`);
-                let data = await result.json();
-                
-                debugger;
-            }
-            
-            /** Função para criação manual da tabela **/
-            async function createTable() {
-                let users = await loadUsers();
-                
-                let tableUsers = document.getElementById('users');
-                
-                for (let user of users) {
-                    let tr = document.createElement("tr");
-                    
-                    let tdName = document.createElement("td")
-                    tdName.innerHTML = user.name;
-                    let tdGender = document.createElement("td")
-                    tdGender.innerHTML = user.gender;
-                    
-                    tr.appendChild(tdName);
-                    tr.appendChild(tdGender);
-                    tableUsers.appendChild(tr);
-                }
-            }
+
         </script>
     </head>
     <body>       
@@ -49,14 +22,19 @@
             
             <table class="table">
                 <tr>
+                    <th>ID</th>
                     <th>Name</th>
                     <th>Gender</th>
                     <th>Hair Color</th>
                 </tr>
                 <tr v-for="user in users">
+                    <td>{{user.id}}</td>
                     <td>{{user.name}}</td>
                     <td>{{user.gender}}</td>
                     <td>{{user.hairColor}}</td>
+                    <td>
+                        <button class="btn btn-danger" @click="removeUser(user.id)"> &times; </button>
+                    </td>
                 </tr>
             </table>
             
@@ -92,12 +70,22 @@
             },
             methods: {
                 addUser: async function(){
-                    await addUser(this.tempUser);
+                    let result =  await fetch(`/user/save?name=${this.tempUser.name}&gender=${this.tempUser.gender}&hairColor=${this.tempUser.hairColor}`);
+                    let data = await result.json();
+                    this.users = await loadUsers();
+                    this.tempUser.name = '';
+                    this.tempUser.gender = '';
+                    this.tempUser.hairColor = '';
+                },
+                removeUser:  async function(id) {
+
+                    let result =  await fetch(`/user/remove?id=${id}`);
+                    let data = await result.json();
+                    this.users = await loadUsers();
                 }
             },
             mounted: async function() {
-                let users = await loadUsers();
-                this.users = users;
+                this.users = await loadUsers();
             }
         })
     </script>

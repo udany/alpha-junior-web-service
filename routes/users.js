@@ -3,14 +3,16 @@ import axios from 'axios'
 import chalk from 'chalk'
 import fileSystem from 'fs-extra'
 
-async function loadUsers(){
+let users = [];
+
+async function loadUsersOnFirstRun(){
     try {
         let data = await fileSystem.readFile("users.json");
         console.log("Funcionou o load");
         users = JSON.parse(data);
     }catch(error){
         console.log(error);
-    }    
+    }
 }
 
 async function saveUsers(){
@@ -25,9 +27,7 @@ async function saveUsers(){
 }
 
 let router = express.Router();
-
-let users = [];
-loadUsers();
+loadUsersOnFirstRun();
 
 //add (edit) users
 router.get('/save/', function (req, res, next) {
@@ -38,8 +38,9 @@ router.get('/save/', function (req, res, next) {
             updatedUser.gender = gender.toLowerCase();
             updatedUser.hairColor = hairColor;
         }else{
+            let id = users.length ? users[users.length-1].id+1 : 1;
             users.push({
-                name, gender, hairColor
+                id, name, gender, hairColor
             });
         }
         saveUsers();
@@ -49,11 +50,10 @@ router.get('/save/', function (req, res, next) {
     }
 });
 
-
 router.get('/remove/', function (req, res, next){
-    let {name} = req.query;
-    if (name) {
-        let removedUser = users.find(x => x.name === name);
+    let {id} = req.query;
+    if (id) {
+        let removedUser = users.find(x => x.id == id);
         if(removedUser){
             users.remove(removedUser);
             saveUsers();
